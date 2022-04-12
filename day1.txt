@@ -1,0 +1,131 @@
+>>> from main.models import Album, Musician
+>>> musician_obj = Musician()
+>>> musician_obj = Musician(first_name="John", last_name="Doe", instrument="Guitar")
+>>> musician_obj.save()
+>>>
+>>>
+>>> Musician.objects.create(first_name="Tom", last_name="Smith", instrument="Piano")
+<Musician: Musician object (2)>
+
+>>> from main.models import Album, Musician
+>>>
+>>> Musician.objects.all()
+<QuerySet [<Musician: John>, <Musician: Tom>]>
+>>>
+>>>
+>>> qs = Musician.objects.filter(first_name="Tom")
+>>> qs
+<QuerySet [<Musician: Tom>]>
+>>> obj = Musician.objects.get(first_name="Tom")
+>>> obj
+<Musician: Tom>
+>>> obj.instrument
+'Piano'
+>>> qs.instrument
+Traceback (most recent call last):
+  File "<console>", line 1, in <module>
+AttributeError: 'QuerySet' object has no attribute 'instrument'
+
+
+>>> obj = Musician.objects.get(first_name="Tom")
+>>> Musician.objects.create(first_name="William", last_name="Smith", instrument="Piano")
+<Musician: William>
+>>> Musician.objects.create(first_name="William", last_name="Doe", instrument="Piano")
+<Musician: William>
+>>> qs
+<QuerySet [<Musician: Tom>]>
+>>> qs qs = Musician.objects.filter(first_name="Tom")^Z
+  File "<console>", line 1
+    qs qs = Musician.objects.filter(first_name="Tom")→
+       ^
+SyntaxError: invalid syntax
+>>> qs = Musician.objects.all()
+>>> qs
+<QuerySet [<Musician: John>, <Musician: Tom>, <Musician: William>, <Musician: William>]>
+>>> qs = Musician.objects.filter(first_name="o")
+>>> qs
+<QuerySet []>
+>>> qs = Musician.objects.filter(first_name__contains="o")
+>>> qs
+<QuerySet [<Musician: John>, <Musician: Tom>]>
+>>> Musician.objects.create(first_name="AarOn", last_name="Doe", instrument="Piano")
+<Musician: AarOn>
+>>> qs = Musician.objects.filter(first_name__contains="o")
+>>> qs
+<QuerySet [<Musician: John>, <Musician: Tom>, <Musician: AarOn>]>
+>>> musician_obj = Musician.objects.first()
+>>> musician_obj = Musician.objects.last()
+>>> musician_obj
+<Musician: AarOn>
+>>> musician_obj = Musician.objects.first()
+>>> musician_obj
+<Musician: John>
+>>> musician_obj
+<Musician: John>
+
+
+>>> Album.objects.create(artist=musician_obj, name="In the End", release_date="2022-04-12", num_stars=5)
+<Album: Album object (1)>
+>>> Album.objects.create(artist=musician_obj, name="Metallica", release_date="2022-04-12", num_stars=5)
+<Album: Album object (2)>
+>>> S
+Traceback (most recent call last):
+  File "<console>", line 1, in <module>
+NameError: name 'S' is not defined
+>>> Album.objects.all()
+<QuerySet [<Album: Album object (1)>, <Album: Album object (2)>]>
+>>> Album.objects.filter(artist=musician_obj)
+<QuerySet [<Album: Album object (1)>, <Album: Album object (2)>]>
+>>>
+>>> musician_obj
+<Musician: John>
+>>> musician_obj.album_set.all()
+<QuerySet [<Album: Album object (1)>, <Album: Album object (2)>]>
+>>>
+>>>
+>>> Album.objects.create(artist=Musician.objects.last(), name="Fire", release_date="2022-04-12", num_stars=5)
+<Album: Album object (3)>
+>>> Album.objects.all()
+<QuerySet [<Album: Album object (1)>, <Album: Album object (2)>, <Album: Album object (3)>]>
+>>> musician_obj.album_set.all()
+<QuerySet [<Album: Album object (1)>, <Album: Album object (2)>]>
+>>>
+
+>>> Album.objects.filter(artist__first_name="John")
+<QuerySet [<Album: Album object (1)>, <Album: Album object (2)>]>
+>>> Album.objects.filter(artist__first_name="John")  # piercing through models
+<QuerySet [<Album: Album object (1)>, <Album: Album object (2)>]>
+>>> Album.objects.filter(artist__first_name="AarOn")  # piercing through models
+<QuerySet [<Album: Album object (3)>]>
+
+>>> Album.objects.filter(name="Metallica")
+<QuerySet [<Album: Album object (2)>]>
+>>> Album.objects.filter(name__contains="M")
+<QuerySet [<Album: Album object (2)>]>
+>>> Album.objects.filter(name__contains="Metal")
+<QuerySet [<Album: Album object (2)>]>
+>>> Album.objects.filter(name__startwith="Metal")
+
+>>> Album.objects.filter(name__startswith="Metal")
+<QuerySet [<Album: Album object (2)>]>
+>>> Album.objects.filter(name__endswith="Metal")
+<QuerySet []>
+>>> Album.objects.filter(name__endswith="ica")
+<QuerySet [<Album: Album object (2)>]>
+>>> Album.objects.create(artist=Musician.objects.last(), name="Fire2", release_date="2022-04-15", num_stars=5)
+<Album: Album object (4)>
+>>> Album.objects.filter(release_date="2022-04-15")
+<QuerySet [<Album: Album object (4)>]>
+>>> Album.objects.filter(release_date__lt="2022-04-15") # less than
+<QuerySet [<Album: Album object (1)>, <Album: Album object (2)>, <Album: Album object (3)>]>
+>>> Album.objects.filter(release_date__lt="2022-04-14") # less than
+<QuerySet [<Album: Album object (1)>, <Album: Album object (2)>, <Album: Album object (3)>]>
+>>> Album.objects.filter(release_date__gt="2022-04-14") # less than
+<QuerySet [<Album: Album object (4)>]>
+>>> Album.objects.filter(release_date__lt="2022-04-14") # less than
+<QuerySet [<Album: Album object (1)>, <Album: Album object (2)>, <Album: Album object (3)>]>
+>>> Album.objects.filter(release_date__lt="2022-04-15") # less than
+<QuerySet [<Album: Album object (1)>, <Album: Album object (2)>, <Album: Album object (3)>]>
+>>> Album.objects.filter(release_date__lte="2022-04-15") # less than or equals to
+<QuerySet [<Album: Album object (1)>, <Album: Album object (2)>, <Album: Album object (3)>, <Album: Album object (4)>]>
+>>>
